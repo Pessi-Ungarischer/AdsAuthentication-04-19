@@ -1,0 +1,30 @@
+﻿﻿@using AdsAuthentication.Data
+@model AdsViewModel
+
+
+<div class="row">
+    <div class="col-md-6 offset-md-3">
+        @foreach (Ad ad in Model.Ads)
+        {
+            <div class="bg-light rounded-3 p-5 mt-3">
+                @if (Model.UserId == 0 || Model.UserId != 0 && Model.UserId != ad.ListerId)
+                {
+                    <h5>Listed by: @ad.ListerName</h5>
+                }
+                <h5>Phone Number: @ad.PhoneNum</h5>
+                <h2>@ad.Description</h2>
+                <h5>Listed on: @ad.Date.ToShortDateString()</h5>
+                @if (Model.UserId != 0 && Model.UserId == ad.ListerId)
+                {
+                    <form method="post" action="/Home/Delete">
+                        <input type="hidden" name="id" value="@ad.Id" />
+                        <button class="btn btn-danger">Delete</button>
+                    </form>
+                }
+            </div>
+
+        }
+    </div>
+
+</div>
+</div>
