@@ -66,12 +66,11 @@ namespace AdsAuthentication_.Web.Controllers
             string userEmail = User.Identity.Name;
             int userId = aar.GetUserByEmail(userEmail).Id;
 
-            List<Ad> ads = aar.GetAds();
-            List<Ad> filteredAds = ads.Where(a => a.ListerId == userId).ToList();
+            List<Ad> ads = aar.GetAdsByEmail(userEmail);
            
             AdsViewModel indexVM = new()
             {
-                Ads = filteredAds,
+                Ads = ads,
                 UserId = userId
             };
             return View(indexVM);

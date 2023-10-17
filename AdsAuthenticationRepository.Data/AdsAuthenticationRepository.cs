@@ -84,7 +84,7 @@ namespace AdsAuthentication.Data
 
             using SqlDataReader reader = command.ExecuteReader();
 
-            if(!reader.Read())
+            if (!reader.Read())
             {
                 return null;
             }
@@ -104,7 +104,8 @@ namespace AdsAuthentication.Data
             using SqlCommand command = connection.CreateCommand();
             command.CommandText = "SELECT a.*, m.Name FROM Ads a " +
                                   "JOIN Members m " +
-                                  "ON A.ListerId = m.Id";
+                                  "ON A.ListerId = m.Id " +
+                                  "ORDER BY DATE DESC";
             connection.Open();
 
 
@@ -135,6 +136,37 @@ namespace AdsAuthentication.Data
             command.Parameters.AddWithValue("@id", id);
             connection.Open();
             command.ExecuteNonQuery();
+        }
+
+        public List<Ad> GetAdsByEmail(string email)
+        {
+            using SqlConnection connection = new(_connectionString);
+            using SqlCommand command = connection.CreateCommand();
+            command.CommandText = "SELECT a.*, m.Name, m.Email FROM Ads a " +
+                                  "JOIN Members m " +
+                                  "ON A.ListerId = m.Id " +
+                                  "WHERE m.Email = @email " +
+                                  "ORDER BY DATE DESC";
+            command.Parameters.AddWithValue("@email", email);
+            connection.Open();
+
+
+            SqlDataReader reader = command.ExecuteReader();
+            List<Ad> ads = new();
+            while (reader.Read())
+            {
+                ads.Add(new Ad
+                {
+                    Id = (int)reader["Id"],
+                    ListerId = (int)reader["ListerId"],
+                    ListerName = (string)reader["Name"],
+                    PhoneNum = (string)reader["PhoneNum"],
+                    Date = (DateTime)reader["Date"],
+                    Description = (string)reader["Description"]
+                });
+
+            }
+            return ads;
         }
     }
 }
